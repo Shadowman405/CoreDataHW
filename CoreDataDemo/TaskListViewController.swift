@@ -70,9 +70,9 @@ class TaskListViewController: UITableViewController {
         }
     }
     
-    private func save(_ taskName: String) {
-        StorageManager.shared.save(taskName)
-    }
+//    private func save(_ taskName: String) {
+//        StorageManager.shared.save(taskName)
+//    }
 }
 
 extension TaskListViewController {
@@ -87,6 +87,21 @@ extension TaskListViewController {
         content.text = task.name
         cell.contentConfiguration = content
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let task = taskList[indexPath.row]
+            taskList.remove(at: indexPath.row)
+            tableView.beginUpdates()
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            StorageManager.shared.delete()
+            tableView.endUpdates()
+        }
     }
 }
 

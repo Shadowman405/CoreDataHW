@@ -72,6 +72,23 @@ class StorageManager {
         }
     }
     
+    func delete()
+    {
+        let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
+        
+        if let tasks = try? viewContext.fetch(fetchRequest){
+            for task in tasks {
+                viewContext.delete(task)
+            }
+        }
+        
+            do {
+                try viewContext.save()
+            } catch let error {
+                print(error.localizedDescription)
+            }
+    }
+    
 // MARK: - CoreData functiona from AppDelegate
     
     lazy var persistentContainer: NSPersistentContainer = {
