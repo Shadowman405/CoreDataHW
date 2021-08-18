@@ -8,15 +8,13 @@
 import UIKit
 import CoreData
 
-protocol TaskViewControllerDelegate {
-    func reloadData()
-}
-
 class TaskListViewController: UITableViewController {
 
-    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    //private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private let cellID = "cell"
-    private var taskList: [Task] = []
+    private var taskList: [Task] = StorageManager.shared.taskList
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,19 +54,24 @@ class TaskListViewController: UITableViewController {
     }
     
     @objc private func addNewTask() {
-        let newTaskVC = TaskViewController()
-        newTaskVC.delegate = self
-        present(newTaskVC, animated: true)
+        StorageManager.shared.showAlert(with: "New Task", and: "What do you want to do?")
     }
+    
+    
     
     private func fetchData() {
         let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
-        
+
         do {
-            taskList = try context.fetch(fetchRequest)
+            //taskList = try context.fetch(fetchRequest)
+            taskList = try StorageManager.shared.viewContext.fetch(fetchRequest)
         } catch let error {
             print(error.localizedDescription)
         }
+    }
+    
+    private func save(_ taskName: String) {
+        StorageManager.shared.save(taskName)
     }
 }
 
@@ -87,9 +90,3 @@ extension TaskListViewController {
     }
 }
 
-extension TaskListViewController: TaskViewControllerDelegate {
-    func reloadData() {
-        fetchData()
-        tableView.reloadData()
-    }
-}
