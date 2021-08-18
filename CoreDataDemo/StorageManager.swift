@@ -72,16 +72,16 @@ class StorageManager {
         }
     }
     
-    func delete()
+    func delete(indexRow: Int)
     {
         let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
+        let taskToDel = taskList[indexRow]
         
         if let tasks = try? viewContext.fetch(fetchRequest){
-            for task in tasks {
-                viewContext.delete(task)
+            for _ in tasks {
+                viewContext.delete(taskToDel)
             }
         }
-        
             do {
                 try viewContext.save()
             } catch let error {
